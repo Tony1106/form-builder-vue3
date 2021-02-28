@@ -5,7 +5,6 @@ export type IBlueprint<T> = {
     component: () => Component;
     props: () => {
       value?: string | null;
-      options?: IOption[];
       [key: string]: any;
     };
     visibility?: () => boolean;
@@ -56,4 +55,8 @@ export type Address = {
   town?: string | null;
   unitNumber?: string | null;
   country?: string | null;
+};
+export type IEvent = {
+  value: string;
+  name: string;
 };

@@ -5,7 +5,7 @@
       type="text"
       :value="value"
       :name="name"
-      @change="$emit('input', e)"
+      @input="handleInput"
       :class="{ 'input-error_highlight': error }"
     />
     <div class="input-error" v-show="error" v-html="_error"></div>
@@ -20,14 +20,19 @@ import { Options, Vue } from "vue-class-component";
     value: String,
     label: String,
     name: String,
-    error: [Boolean, String],
+    error: [Boolean, Array],
   },
+  emits: ["input"],
   name: "VInput",
 })
 export default class VInput extends Vue {
   name!: string;
   label?: string;
   error?: string[] | boolean;
+  handleInput(e: any) {
+    const value = e.target.value;
+    this.$emit("input", { value, name: this.name });
+  }
   get _error(): string | null {
     if (!this.error) return null;
     if (typeof this.error === "boolean")

@@ -7,6 +7,7 @@
       ref="formDoc1"
       :value="loginContext.formData"
       @input="(e) => loginContext.update(e)"
+      @error="loginContext.handleError"
       :blueprint="loginContext.blueprint"
     />
     <v-button @click="submitDoc1">Submit</v-button>
@@ -18,6 +19,7 @@
       ref="formDoc2"
       :value="addressContext.formData"
       @input="(e) => addressContext.update(e)"
+      @error="addressContext.handleError"
       :blueprint="addressContext.blueprint"
     />
     <v-button @click="submitDoc2">Submit</v-button>
@@ -32,7 +34,10 @@ import { doc1 } from "./formBuilder/blueprint/doc1";
 import { doc2 } from "./formBuilder/blueprint/doc2";
 import VButton from "./components/VButton.vue";
 import { Component, ref, onMounted, reactive } from "vue";
-
+import "primeflex/primeflex.css";
+import "primevue/resources/themes/saga-blue/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
 @Options({
   components: {
     DocumentBuilder,
@@ -56,13 +61,17 @@ export default class App extends Vue {
   loginContext = setup(() => {
     const formData = ref({ email: "", password: "" });
     const blueprint = doc1;
+    const error = ref({});
     const update = (value: any) => {
       formData.value = value;
     };
-    return { formData, update, blueprint };
+    const handleError = (err: any) => {
+      error.value = err;
+    };
+    return { formData, update, blueprint, handleError, error };
   });
   addressContext = setup(() => {
-    let formData = reactive({
+    let formData = ref({
       buildingName: null,
       postalCode: null,
       state: null,
@@ -75,11 +84,15 @@ export default class App extends Vue {
       country: null,
     } as Address);
     const blueprint = doc2;
+    const error = ref({});
+    const handleError = (err: any) => {
+      error.value = err;
+    };
     const update = (value: any) => {
-      formData = value;
+      formData.value = value;
     };
 
-    return { formData, update, blueprint };
+    return { formData, update, blueprint, handleError, error };
   });
   submitDoc1() {
     this.$refs.formDoc1?.validate();
@@ -92,8 +105,6 @@ export default class App extends Vue {
   }
 
   handleChangeLogin(value: any) {
-    console.log(value, "valu");
-    console.log(this.loginContext);
     // this.loginForm = value;
   }
 }

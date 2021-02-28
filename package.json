@@ -11,11 +11,16 @@
     "@types/lodash": "^4.14.168",
     "core-js": "^3.6.5",
     "lodash": "^4.17.21",
+    "primeflex": "^2.0.0",
+    "primeicons": "^4.1.0",
+    "primevue": "^3.3.2",
     "validate.js": "^0.13.1",
     "vue": "^3.0.0",
-    "vue-class-component": "^8.0.0-0"
+    "vue-class-component": "^8.0.0-0",
+    "vue-select": "^3.11.2"
   },
   "devDependencies": {
+    "@types/vue-select": "^3.11.1",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -42,7 +47,9 @@
     "parserOptions": {
       "parser": "@typescript-eslint/parser"
     },
-    "rules": { "no-unused-vars": "off"}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",

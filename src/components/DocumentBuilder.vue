@@ -1,11 +1,12 @@
 <template>
-  <div @input="handleChange">
+  <div>
     <component
       v-for="child in childNodes"
       :is="child.component"
       :key="child.props.name"
       v-bind="child.props"
       :style="{ width: child.width }"
+      @input="handleChange"
     >
     </component>
   </div>
@@ -22,6 +23,7 @@ import {
   IFormData,
   IErrors,
   IConstraints,
+  IEvent,
 } from "../type";
 
 @Options({
@@ -49,9 +51,10 @@ export default class FormBuilder extends Vue {
   validateOnChange!: boolean;
   errors!: IErrors | null;
   localErrors: IErrors | null = this.errors;
-  handleChange(e: any) {
-    const fieldPath: string = e.target.name;
-    const value: string = e.target.value;
+  handleChange(e: IEvent) {
+    const fieldPath: string = e.name;
+    const value: string = e.value;
+    console.log(e);
 
     this.updateFormData(fieldPath, value);
     if (this.validateOnChange) {
@@ -61,6 +64,9 @@ export default class FormBuilder extends Vue {
   validate() {
     const constraints = this.makeFormConstraints();
     const errors = validate(this.value, constraints);
+    this.updateError(errors);
+  }
+  updateError(errors: IErrors) {
     this.localErrors = errors;
     this.$emit("error", errors);
   }
@@ -68,10 +74,12 @@ export default class FormBuilder extends Vue {
   makeFormConstraints() {
     let validateContraints: IConstraints = {};
     for (const fieldPath in this.blueprint) {
+      const visibility = this.blueprint[fieldPath].visibility?.() ?? true;
       const isRequired = this.blueprint[fieldPath].required?.() ?? true;
       const schema = this.blueprint[fieldPath].validation?.() || {};
+      if (!visibility) break;
       let constraint: IConstraints = {
-        presence: { allowEmpty: !isRequired },
+        presence: isRequired ? { allowEmpty: false } : false,
         ...schema,
       };
 
@@ -83,9 +91,11 @@ export default class FormBuilder extends Vue {
     let childs: IChildNode[] = [];
     for (const fieldName in this.blueprint) {
       const fieldAttr = this.blueprint[fieldName];
+      fieldAttr.value = this.value;
       const component = fieldAttr.component();
       const props = fieldAttr.props();
       const fieldData = this.getFieldDataByPath(fieldName);
+
       const error = this.getFieldError(fieldName);
       const visibility = fieldAttr.visibility?.() ?? true;
       const width = fieldAttr.width?.() ?? "100%";
@@ -100,21 +110,19 @@ export default class FormBuilder extends Vue {
           error,
         },
       });
+      console.log(fieldData, fieldName);
     }
 
     return childs.filter((child) => !!child.visibility);
   }
-  giveContext() {
-    for (const fieldName in this.blueprint) {
-      this.blueprint[fieldName].value = this.value;
-    }
-  }
+
   getFieldDataByPath(path: string) {
     return _.get(this.value, path);
   }
   updateFormData(fieldPath: string, value: string) {
     const formData = _.cloneDeep(this.value);
     _.setWith(formData, fieldPath, value);
+    this.updateError({});
     this.$emit("input", formData);
   }
   getFieldError(fieldPath: string) {
