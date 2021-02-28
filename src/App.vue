@@ -1,15 +1,100 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <div class="wrapper">
+    <div class="title">Login Form</div>
+    <document-builder
+      class="input-wrapper"
+      ref="formDoc1"
+      :value="loginContext.formData"
+      @input="(e) => loginContext.update(e)"
+      :blueprint="loginContext.blueprint"
+    />
+    <v-button @click="submitDoc1">Submit</v-button>
+  </div>
+  <div class="wrapper">
+    <div class="title">Address</div>
+    <document-builder
+      class="input-wrapper"
+      ref="formDoc2"
+      :value="addressContext.formData"
+      @input="(e) => addressContext.update(e)"
+      :blueprint="addressContext.blueprint"
+    />
+    <v-button @click="submitDoc2">Submit</v-button>
+  </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { Options, Vue, setup } from "vue-class-component";
+import DocumentBuilder from "./components/DocumentBuilder.vue";
+import { IErrors, Address } from "./type";
+import { doc1 } from "./formBuilder/blueprint/doc1";
+import { doc2 } from "./formBuilder/blueprint/doc2";
+import VButton from "./components/VButton.vue";
+import { Component, ref, onMounted, reactive } from "vue";
 
-export default {
-  name: 'App',
+@Options({
   components: {
-    HelloWorld
+    DocumentBuilder,
+    VButton,
+  },
+  data() {
+    return {
+      formDoc1: null,
+    };
+  },
+})
+export default class App extends Vue {
+  click = false;
+  ref!: any;
+  errors: IErrors = {};
+
+  $refs!: {
+    formDoc1: DocumentBuilder | undefined;
+    formDoc2: DocumentBuilder | undefined;
+  };
+  loginContext = setup(() => {
+    const formData = ref({ email: "", password: "" });
+    const blueprint = doc1;
+    const update = (value: any) => {
+      formData.value = value;
+    };
+    return { formData, update, blueprint };
+  });
+  addressContext = setup(() => {
+    let formData = reactive({
+      buildingName: null,
+      postalCode: null,
+      state: null,
+      streetName: null,
+      streetNumber: null,
+      streetType: null,
+      suburb: null,
+      town: null,
+      unitNumber: null,
+      country: null,
+    } as Address);
+    const blueprint = doc2;
+    const update = (value: any) => {
+      formData = value;
+    };
+
+    return { formData, update, blueprint };
+  });
+  submitDoc1() {
+    this.$refs.formDoc1?.validate();
+  }
+  submitDoc2() {
+    this.$refs.formDoc2?.validate();
+  }
+  handleError(errors: IErrors) {
+    this.errors = errors;
+  }
+
+  handleChangeLogin(value: any) {
+    console.log(value, "valu");
+    console.log(this.loginContext);
+    // this.loginForm = value;
   }
 }
 </script>
@@ -22,5 +107,24 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 32px;
+}
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-items: center;
+  width: 500px;
+}
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
 }
 </style>
