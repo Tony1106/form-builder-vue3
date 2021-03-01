@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper-dropdown">
     <dropdown
       @change="handleInput"
       :value="value"
@@ -8,7 +8,7 @@
       optionLabel="name"
       :placeholder="placeholder"
     ></dropdown>
-    <div class="country">Country: {{ value }}</div>
+    <div class="country">{{ label }}: {{ value }}</div>
     <div class="error" v-if="error">{{ error }}</div>
   </div>
 </template>
@@ -22,6 +22,7 @@ import { IErrors } from "../type";
     value: String,
     options: Array,
     name: String,
+    label: String,
     error: Array,
     placeholder: String,
   },
@@ -44,10 +45,10 @@ export default class VDropdown extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped >
-.wrapper {
+.wrapper-dropdown {
   width: 100%;
 }
-.wrapper::v-deep .p-dropdown {
+.wrapper-dropdown::v-deep .p-dropdown {
   width: 100%;
 }
 .country {

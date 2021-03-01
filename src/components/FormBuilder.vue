@@ -25,7 +25,7 @@ import {
   IConstraints,
   IEvent,
 } from "../type";
-
+import { Watch } from "vue-property-decorator";
 @Options({
   name: "formBuilder",
   props: {

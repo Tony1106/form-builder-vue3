@@ -1,6 +1,7 @@
 type Ikey = "a" | "b";
+
 export type IBlueprint<T> = {
-  [key in keyof T]: {
+  [key in keyof T | string]: {
     value?: T;
     component: () => Component;
     props: () => {
