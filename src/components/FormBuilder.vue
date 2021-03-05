@@ -13,8 +13,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Component, ref } from "vue";
+import { Options, Vue } from "vue-class-component";
 import _ from "lodash";
 import validate from "validate.js";
 import {
@@ -25,7 +24,6 @@ import {
   IConstraints,
   IEvent,
 } from "../type";
-import { Watch } from "vue-property-decorator";
 @Options({
   name: "formBuilder",
   props: {
@@ -54,7 +52,6 @@ export default class FormBuilder extends Vue {
   handleChange(e: IEvent) {
     const fieldPath: string = e.name;
     const value: string = e.value;
-    console.log(e);
 
     this.updateFormData(fieldPath, value);
     if (this.validateOnChange) {
@@ -91,10 +88,16 @@ export default class FormBuilder extends Vue {
     let childs: IChildNode[] = [];
     for (const fieldName in this.blueprint) {
       const fieldAttr = this.blueprint[fieldName];
-      fieldAttr.value = this.value;
+      const fieldData = this.getFieldDataByPath(fieldName);
+      const giveBlueprintContext = () => {
+        //give utils function or value to the blueprint
+        fieldAttr.value = this.value;
+        fieldAttr.fieldValue = fieldData;
+        fieldAttr.uppercaseValue = (fieldData as string)?.toUpperCase();
+      };
+      giveBlueprintContext();
       const component = fieldAttr.component();
       const props = fieldAttr.props();
-      const fieldData = this.getFieldDataByPath(fieldName);
 
       const error = this.getFieldError(fieldName);
       const visibility = fieldAttr.visibility?.() ?? true;
@@ -104,13 +107,12 @@ export default class FormBuilder extends Vue {
         visibility,
         width,
         props: {
-          ...props,
           value: fieldData,
           name: fieldName,
           error,
+          ...props,
         },
       });
-      console.log(fieldData, fieldName);
     }
 
     return childs.filter((child) => !!child.visibility);
@@ -122,7 +124,10 @@ export default class FormBuilder extends Vue {
   updateFormData(fieldPath: string, value: string) {
     const formData = _.cloneDeep(this.value);
     _.setWith(formData, fieldPath, value);
-    this.updateError({});
+    //remove error for field is updating
+    const errors = { ...this.localErrors };
+    if (errors) delete errors[fieldPath];
+    this.updateError(errors);
     this.$emit("input", formData);
   }
   getFieldError(fieldPath: string) {
