@@ -60,6 +60,23 @@
       <v-button @click="submitDoc3">Submit</v-button>
     </v-layout-form>
   </div>
+  <div class="wrapper">
+    <div class="title">Nested Data Object</div>
+    <v-layout-form
+      :formData="nestedContext.formData"
+      :error="nestedContext.error"
+    >
+      <form-builder
+        class="input-wrapper"
+        ref="formDoc3"
+        :value="nestedContext.formData"
+        @input="(e) => nestedContext.update(e)"
+        @error="nestedContext.handleError"
+        :blueprint="nestedContext.blueprint"
+      />
+      <v-button @click="submitDoc3">Submit</v-button>
+    </v-layout-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -79,6 +96,8 @@ import {
   DriverLicence,
   Medicare,
 } from "./formBuilder/blueprint/doc3";
+import { doc4 } from "./formBuilder/blueprint/doc4";
+
 import VButton from "./components/VButton.vue";
 import VLayoutForm from "./components/VLayoutForm.vue";
 import { Component, ref, onMounted, reactive } from "vue";
@@ -193,6 +212,29 @@ export default class App extends Vue {
       error,
       documentBlueprint,
     };
+  });
+  nestedContext = setup(() => {
+    let formData = ref({
+      form: {
+        driverLicence: {
+          idNumber: null,
+        },
+        passport: {
+          idNumber: null,
+        },
+      },
+      country: null,
+    });
+    const blueprint = doc4;
+    const error = ref({});
+    const handleError = (err: any) => {
+      error.value = err;
+    };
+    const update = (value: any) => {
+      formData.value = value;
+    };
+
+    return { formData, update, blueprint, handleError, error };
   });
   submitDoc1() {
     this.$refs.formDoc1?.validate();

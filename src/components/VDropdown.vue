@@ -8,7 +8,7 @@
       optionLabel="name"
       :placeholder="placeholder"
     ></dropdown>
-    <div class="country">{{ label }}: {{ value }}</div>
+    <div class="country">{{ label }}: {{ getLabel(value) }}</div>
     <div class="error" v-if="error">{{ error }}</div>
   </div>
 </template>
@@ -17,6 +17,10 @@
 import { Options, Vue } from "vue-class-component";
 import Dropdown from "primevue/dropdown";
 import { IErrors } from "../type";
+type IOption = {
+  code: string;
+  name: string;
+};
 @Options({
   props: {
     value: String,
@@ -34,11 +38,15 @@ export default class VDropdown extends Vue {
   value!: string | null;
   name!: string | null;
   error!: IErrors | null;
+  options!: IOption[];
   handleInput(e: any) {
     this.$emit("input", {
       value: e.value,
       name: this.name,
     });
+  }
+  getLabel(code: string) {
+    return this.options.find((op) => op.code === code)?.name || "";
   }
 }
 </script>

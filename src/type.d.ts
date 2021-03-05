@@ -3,6 +3,8 @@ type Ikey = "a" | "b";
 export type IBlueprint<T> = {
   [key in keyof T | string]: {
     value?: T;
+    fieldValue?: any;
+    uppercaseValue?: string;
     component: () => Component;
     props: () => {
       value?: string | null;

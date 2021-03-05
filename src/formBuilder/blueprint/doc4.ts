@@ -1,8 +1,8 @@
 import VInput from "../../components/VInput.vue";
 import VDropdown from "../../components/VDropdown.vue";
-import { Address, IBlueprint } from "../../type";
+import { IBlueprint } from "../../type";
 
-export const doc2: IBlueprint<Address> = {
+export const doc4: IBlueprint<any> = {
   country: {
     component() {
       return VDropdown;
@@ -37,70 +37,30 @@ export const doc2: IBlueprint<Address> = {
       return "100%";
     },
   },
-  buildingName: {
+  "form.driverLicence.idNumber": {
     component() {
       return VInput;
     },
     props() {
       return {
-        label: "Building Name",
+        label: "IdNumber DriverLicence",
       };
     },
     required() {
       return true;
     },
   },
-  streetName: {
+  "form.passport.idNumber": {
     component() {
       return VInput;
     },
     props() {
       return {
-        label: "Street Name",
-      };
-    },
-    visibility() {
-      return true;
-    },
-    validation() {
-      return true;
-    },
-  },
-
-  postalCode: {
-    component() {
-      return VInput;
-    },
-    props() {
-      return {
-        label: "Postal Code",
-      };
-    },
-    visibility() {
-      return this.value?.country === "AUS";
-    },
-    validation() {
-      return {
-        length: { is: 4 },
-      };
-    },
-  },
-  state: {
-    component() {
-      return VInput;
-    },
-    props() {
-      return {
-        label: "State",
+        label: "IdNumber Passport - Custom value, always uppercase the value",
+        value: this.uppercaseValue,
       };
     },
     required() {
-      return this.value?.country === "AUS";
-    },
-    visibility() {
-      return this.value?.country === "AUS";
-    },
-    validation() {
       return true;
     },
   },
