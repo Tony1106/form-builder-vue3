@@ -86,9 +86,9 @@ export default class FormBuilder extends Vue {
   }
   get childNodes() {
     let childs: IChildNode[] = [];
-    for (const fieldName in this.blueprint) {
-      const fieldAttr = this.blueprint[fieldName];
-      const fieldData = this.getFieldDataByPath(fieldName);
+    for (const fieldPath in this.blueprint) {
+      const fieldAttr = this.blueprint[fieldPath];
+      const fieldData = this.getFieldDataByPath(fieldPath);
       const giveBlueprintContext = () => {
         //give utils function or value to the blueprint
         fieldAttr.value = this.value;
@@ -99,7 +99,7 @@ export default class FormBuilder extends Vue {
       const component = fieldAttr.component();
       const props = fieldAttr.props();
 
-      const error = this.getFieldError(fieldName);
+      const error = this.getFieldError(fieldPath);
       const visibility = fieldAttr.visibility?.() ?? true;
       const width = fieldAttr.width?.() ?? "100%";
       childs.push({
@@ -108,7 +108,7 @@ export default class FormBuilder extends Vue {
         width,
         props: {
           value: fieldData,
-          name: fieldName,
+          name: fieldPath,
           error,
           ...props,
         },

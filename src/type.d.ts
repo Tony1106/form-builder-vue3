@@ -1,7 +1,7 @@
 type Ikey = "a" | "b";
 
 export type IBlueprint<T> = {
-  [key in keyof T | string]: {
+  [key: string]: {
     value?: T;
     fieldValue?: any;
     uppercaseValue?: string;
