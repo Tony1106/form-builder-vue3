@@ -19,7 +19,7 @@ export const doc4: IBlueprint<any> = {
           { name: "Australia", code: "AUS" },
         ],
         optionLabel: "name",
-        placeholder: "Select a City",
+        placeholder: "Select a Country",
       };
     },
     visibility() {

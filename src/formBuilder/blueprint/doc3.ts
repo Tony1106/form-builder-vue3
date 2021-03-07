@@ -23,7 +23,7 @@ export const doc3: IBlueprint<Document> = {
           { name: "Australia", code: "AUS" },
         ],
         optionLabel: "name",
-        placeholder: "Select a City",
+        placeholder: "Select a Country",
       };
     },
     required() {
