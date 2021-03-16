@@ -118,8 +118,6 @@ import "primeicons/primeicons.css";
   },
 })
 export default class App extends Vue {
-  click = false;
-  ref!: any;
   errors: IErrors = {};
 
   $refs!: {

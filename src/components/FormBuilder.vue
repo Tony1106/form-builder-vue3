@@ -28,7 +28,6 @@ import {
   name: "formBuilder",
   props: {
     value: Object,
-    childs: Array,
     errors: Object,
     validateOnChange: Boolean,
     blueprint: {
